@@ -19,6 +19,9 @@ else:
 
 st.write(st.session_state.data)
 
+st.write(st.secrets["SUPABASE_URL"])
+st.write(st.secrets["SUPABASE_KEY"][:20])
+
 if st.button("Guardar respuestas"):
     guardar_respuesta(st.session_state.data)
     st.success("Respuestas guardadas")
