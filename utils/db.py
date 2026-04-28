@@ -8,23 +8,31 @@ def get_client():
 
 
 
+    
+    
 def guardar_respuesta(data):
     supabase = get_client()
 
-    supabase.table("respuestas").insert({
-        "edad": data.get("edad"),
-        "situacion": data.get("situacion"),
-        "ninos": data.get("ninos"),
-        "adultos": data.get("adultos"),
-        "transportes": ", ".join(data.get("transportes", [])),
+    trabajo = data.get("trabajo") or {}
+    salud = data.get("salud") or {}
 
-        "trabajo_freq": data.get("trabajo", {}).get("frecuencia"),
-        "trabajo_coche": data.get("trabajo", {}).get("coche"),
-        "trabajo_bici": data.get("trabajo", {}).get("bici"),
-        "trabajo_andando": data.get("trabajo", {}).get("andando"),
+    response = supabase.table("respuestas").insert({
+        "edad": int(data.get("edad") or 0),
+        "situacion": data.get("situacion") or "",
+        "ninos": int(data.get("ninos") or 0),
+        "adultos": int(data.get("adultos") or 0),
 
-        "salud_freq": data.get("salud", {}).get("frecuencia"),
-        "salud_coche": data.get("salud", {}).get("coche"),
-        "salud_bici": data.get("salud", {}).get("bici"),
-        "salud_andando": data.get("salud", {}).get("andando"),
+        "transportes": ", ".join(data.get("transportes") or []),
+
+        "trabajo_freq": int(trabajo.get("frecuencia") or 0),
+        "trabajo_coche": int(trabajo.get("coche") or 0),
+        "trabajo_bici": int(trabajo.get("bici") or 0),
+        "trabajo_andando": int(trabajo.get("andando") or 0),
+
+        "salud_freq": int(salud.get("frecuencia") or 0),
+        "salud_coche": int(salud.get("coche") or 0),
+        "salud_bici": int(salud.get("bici") or 0),
+        "salud_andando": int(salud.get("andando") or 0),
     }).execute()
+
+    return response

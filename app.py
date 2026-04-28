@@ -2,13 +2,14 @@ import streamlit as st
 
 def init_state():
     if "data" not in st.session_state:
-        st.session_state.data = {
-            "edad": 0,
-            "ninos": 0,
-            "adultos": 0,
-            "trabajo": {},
-            "salud": {}
-        }
+        st.session_state.data = {}
+
+    # aseguramos claves siempre existentes
+    st.session_state.data.setdefault("edad", 0)
+    st.session_state.data.setdefault("ninos", 0)
+    st.session_state.data.setdefault("adultos", 0)
+    st.session_state.data.setdefault("trabajo", {})
+    st.session_state.data.setdefault("salud", {})
 
 init_state()
 
