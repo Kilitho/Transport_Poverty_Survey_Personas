@@ -11,6 +11,9 @@ def get_client():
     
 def guardar_respuesta(data):
     supabase = get_client()
+    
+    st.write(st.secrets["SUPABASE_URL"])
+    st.write(st.secrets["SUPABASE_KEY"][:20])
 
     try:
         response = supabase.table("respuestas").insert({
