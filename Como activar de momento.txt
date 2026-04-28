@@ -1,0 +1,7 @@
+En anaconda prompt:
+
+conda activate thesis_transport_poverty
+
+cd "C:\Empresas y trabajo\Comision Europea\8. Collaboration with JRC Sevilla\Encuesta online"
+
+streamlit run app.py
