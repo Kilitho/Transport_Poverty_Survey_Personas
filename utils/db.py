@@ -9,30 +9,32 @@ def get_client():
 
 
     
-    
 def guardar_respuesta(data):
     supabase = get_client()
 
-    trabajo = data.get("trabajo") or {}
-    salud = data.get("salud") or {}
+    try:
+        response = supabase.table("respuestas").insert({
+            "edad": int(data.get("edad") or 0),
+            "situacion": data.get("situacion"),
+            "ninos": int(data.get("ninos") or 0),
+            "adultos": int(data.get("adultos") or 0),
 
-    response = supabase.table("respuestas").insert({
-        "edad": int(data.get("edad") or 0),
-        "situacion": data.get("situacion") or "",
-        "ninos": int(data.get("ninos") or 0),
-        "adultos": int(data.get("adultos") or 0),
+            "transportes": ", ".join(data.get("transportes") or []),
 
-        "transportes": ", ".join(data.get("transportes") or []),
+            "trabajo_freq": int(data.get("trabajo", {}).get("frecuencia") or 0),
+            "trabajo_coche": int(data.get("trabajo", {}).get("coche") or 0),
+            "trabajo_bici": int(data.get("trabajo", {}).get("bici") or 0),
+            "trabajo_andando": int(data.get("trabajo", {}).get("andando") or 0),
 
-        "trabajo_freq": int(trabajo.get("frecuencia") or 0),
-        "trabajo_coche": int(trabajo.get("coche") or 0),
-        "trabajo_bici": int(trabajo.get("bici") or 0),
-        "trabajo_andando": int(trabajo.get("andando") or 0),
+            "salud_freq": int(data.get("salud", {}).get("frecuencia") or 0),
+            "salud_coche": int(data.get("salud", {}).get("coche") or 0),
+            "salud_bici": int(data.get("salud", {}).get("bici") or 0),
+            "salud_andando": int(data.get("salud", {}).get("andando") or 0),
+        }).execute()
 
-        "salud_freq": int(salud.get("frecuencia") or 0),
-        "salud_coche": int(salud.get("coche") or 0),
-        "salud_bici": int(salud.get("bici") or 0),
-        "salud_andando": int(salud.get("andando") or 0),
-    }).execute()
+        return response
 
-    return response
+    except Exception as e:
+        import streamlit as st
+        st.error(str(e))
+        raise
