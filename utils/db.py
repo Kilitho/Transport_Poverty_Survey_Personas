@@ -2,8 +2,8 @@ from supabase import create_client
 import streamlit as st
 
 def get_client():
-    url = st.secrets["https://emujzqjcyvdubpwecbkt.supabase.co"]
-    key = st.secrets["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtdWp6cWpjeXZkdWJwd2VjYmt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczODE1NDQsImV4cCI6MjA5Mjk1NzU0NH0.h6SrQGCGNJ6Ednls04z4m1NIkdctOyiEgIjGq0yJm5o"]
+    url = st.secrets["SUPABASE_URL"]
+    key = st.secrets["SUPABASE_KEY"]
     return create_client(url, key)
 
 
