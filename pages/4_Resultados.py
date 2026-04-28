@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.calculos import calcular_indice
+from utils.db import guardar_respuesta
 
 st.title("Resultado")
 
@@ -16,4 +16,7 @@ elif indice < 60:
 else:
     st.error("Alta")
 
-st.write(data)
+
+if st.button("Guardar respuestas"):
+    guardar_respuesta(st.session_state.data)
+    st.success("Respuestas guardadas")
