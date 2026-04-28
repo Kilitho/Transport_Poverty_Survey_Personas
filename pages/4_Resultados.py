@@ -1,5 +1,6 @@
 import streamlit as st
 from utils.db import guardar_respuesta
+from utils.calculos import calcular_indice
 
 st.title("Resultado")
 
