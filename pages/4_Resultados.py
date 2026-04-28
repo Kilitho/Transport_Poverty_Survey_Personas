@@ -17,6 +17,7 @@ elif indice < 60:
 else:
     st.error("Alta")
 
+st.write(st.session_state.data)
 
 if st.button("Guardar respuestas"):
     guardar_respuesta(st.session_state.data)
