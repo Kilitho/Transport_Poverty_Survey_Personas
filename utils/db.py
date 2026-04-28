@@ -3,8 +3,10 @@ import streamlit as st
 
 def get_client():
     url = st.secrets["SUPABASE_URL"]
-    key = st.secrets["SUPABASE_KEY"]
-    return create_client(url, key)
+    key = st.secrets["SUPABASE_KEY"].strip()
+    
+    client = create_client(url, key)
+    return client
 
 
 
@@ -12,8 +14,6 @@ def get_client():
 def guardar_respuesta(data):
     supabase = get_client()
     
-    st.write(st.secrets["SUPABASE_URL"])
-    st.write(st.secrets["SUPABASE_KEY"][:20])
 
     try:
         response = supabase.table("respuestas").insert({
