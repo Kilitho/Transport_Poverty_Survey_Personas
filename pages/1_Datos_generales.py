@@ -61,5 +61,15 @@ st.session_state.data["ninos"] = ninos
 st.session_state.data["adultos"] = adultos
 st.session_state.data["transportes"] = transportes
 
+
+mostrar_error = False
+
 if st.button("Siguiente"):
-    st.switch_page("pages/2_Trabajo.py")
+    if len(transportes) == 0:
+        mostrar_error = True
+    else:
+        st.switch_page("pages/2_Trabajo.py")
+
+if mostrar_error:
+    st.error("⚠️ Selecciona al menos un medio de transporte")
+    

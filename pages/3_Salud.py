@@ -75,15 +75,15 @@ valores_validos = [v for v in resultados.values() if v is not None]
 if len(valores_validos) > 0:
 
     tiempo_min = min(valores_validos)
-    tiempo_total_horas = (tiempo_min * frecuencia) / 60
+    horas_pagina = (tiempo_min * frecuencia) / 60
 
     hay_eficiente = any(v <= tiempo_razonable for v in valores_validos)
 
-    trayectos_totales = frecuencia
-    trayectos_largos = 0 if hay_eficiente else frecuencia
+    acum = st.session_state.acumulados
 
-    total_acum = acum["trayectos_totales"] + trayectos_totales
-    largos_acum = acum["trayectos_largos"] + trayectos_largos
+    total_acum = acum["trayectos_totales"] + frecuencia
+    cumplen_acum = acum["trayectos_cumplen"] + (frecuencia if hay_eficiente else 0)
+    horas_acum = acum["horas_totales"] + horas_pagina
 
     # --- MÉTRICAS ---
     st.subheader("Resumen salud")
@@ -91,19 +91,19 @@ if len(valores_validos) > 0:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.metric("Tiempo total mensual", f"{tiempo_total_horas:.1f} h")
+        st.metric("Tiempo total mensual", f"{horas_pagina:.1f} h")
 
     with col2:
         st.metric("Medios eficientes", f"{cumplen}/{len(valores_validos)}")
 
     with col3:
-        st.metric("Trayectos demasiado largos", largos_acum)
+        largos = total_acum - cumplen_acum
+        st.metric("Trayectos demasiado largos", largos)
 
-    st.markdown("### 🚦 Eficiencia total acumulada")
+    st.markdown("### 📊 Resumen acumulado")
 
-    st.write(
-        f"**{total_acum - largos_acum} / {total_acum} trayectos cumplen el tiempo razonable**"
-    )
+    st.write(f"**Horas totales acumuladas: {horas_acum:.1f} h**")
+    st.write(f"**{cumplen_acum} / {total_acum} trayectos cumplen el tiempo razonable**")
 
 # --- GUARDAR ---
 st.session_state.data["salud"] = {
