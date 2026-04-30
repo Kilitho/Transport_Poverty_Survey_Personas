@@ -51,7 +51,7 @@ for t in ["Coche/Moto", "Bicicleta", "Caminar", "Transporte público"]:
             placeholder="Introduce tiempo..."
         )
 
-# --- VALIDACIÓN (SOLO AL ENVIAR) ---
+# --- VALIDACIÓN ---
 valores_validos = [v for v in resultados.values() if v is not None]
 errores = len(valores_validos) == 0 or any(v is None for v in resultados.values())
 
@@ -68,9 +68,9 @@ if len(valores_validos) > 0:
     horas_acum = acum["horas_totales"] + horas_pagina
 
     # --- RESUMEN ---
-    st.subheader("Resumen mensual")
+    st.subheader("Resumen salud")
 
-    colA, colB, colC = st.columns(3)
+    colA, colB = st.columns(2)
 
     with colA:
         st.metric("Tiempo total", f"{horas_pagina:.1f} h")
@@ -81,18 +81,25 @@ if len(valores_validos) > 0:
             f"{sum(v <= tiempo_razonable for v in valores_validos)}/{len(valores_validos)}"
         )
 
-    with colC:
-        st.metric("Trayectos largos", total_acum - cumplen_acum)
-
     # --- ACUMULADO GLOBAL ---
     st.markdown("### 📊 Acumulado global")
 
-    st.write(f"**Horas totales acumuladas: {horas_acum:.1f} h**")
+    col1, col2, col3 = st.columns(3)
 
-    st.metric(
-        "Trayectos dentro del tiempo razonable",
-        f"{cumplen_acum} / {total_acum}"
-    )
+    with col1:
+        st.metric("Horas totales acumuladas", f"{horas_acum:.1f} h")
+
+    with col2:
+        st.metric(
+            "Trayectos dentro del tiempo razonable",
+            f"{cumplen_acum} / {total_acum}"
+        )
+
+    with col3:
+        st.metric(
+            "Trayectos largos",
+            total_acum - cumplen_acum
+        )
 
 # --- BOTÓN ---
 if st.button("Ver resultados"):

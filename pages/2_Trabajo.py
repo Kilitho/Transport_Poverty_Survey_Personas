@@ -42,24 +42,20 @@ iconos = {
     "Transporte público": "🚌"
 }
 
-errores = False
-
 for t in ["Coche/Moto", "Bicicleta", "Caminar", "Transporte público"]:
     if t in transportes:
-        val = st.number_input(
+        resultados[t] = st.number_input(
             f"{iconos[t]} {t} (min)",
             min_value=1,
             value=None,
             placeholder="Introduce tiempo..."
         )
-        resultados[t] = val
 
-        if val is None:
-            errores = True
+# --- VALIDACIÓN SOLO AL ENVIAR ---
+valores_validos = [v for v in resultados.values() if v is not None]
+errores = len(valores_validos) == 0 or any(v is None for v in resultados.values())
 
 # --- CÁLCULOS ---
-valores_validos = [v for v in resultados.values() if v is not None]
-
 if len(valores_validos) > 0:
 
     tiempo_min = min(valores_validos)
@@ -71,9 +67,10 @@ if len(valores_validos) > 0:
     cumplen_acum = acum["trayectos_cumplen"] + (frecuencia if hay_eficiente else 0)
     horas_acum = acum["horas_totales"] + horas_pagina
 
+    # --- RESUMEN ---
     st.subheader("Resumen mensual")
 
-    colA, colB, colC = st.columns(3)
+    colA, colB = st.columns(2)
 
     with colA:
         st.metric("Tiempo total", f"{horas_pagina:.1f} h")
@@ -84,24 +81,31 @@ if len(valores_validos) > 0:
             f"{sum(v <= tiempo_razonable for v in valores_validos)}/{len(valores_validos)}"
         )
 
-    with colC:
-        st.metric("Trayectos largos", total_acum - cumplen_acum)
-
+    # --- ACUMULADO GLOBAL ---
     st.markdown("### 📊 Acumulado global")
 
-    st.write(f"**Horas totales acumuladas: {horas_acum:.1f} h**")
+    col1, col2, col3 = st.columns(3)
 
-    # 🔥 MÉTRICA GRANDE (MEJORADA)
-    st.metric(
-        "Trayectos dentro del tiempo razonable",
-        f"{cumplen_acum} / {total_acum}"
-    )
+    with col1:
+        st.metric("Horas totales acumuladas", f"{horas_acum:.1f} h")
+
+    with col2:
+        st.metric(
+            "Trayectos dentro del tiempo razonable",
+            f"{cumplen_acum} / {total_acum}"
+        )
+
+    with col3:
+        st.metric(
+            "Trayectos largos",
+            total_acum - cumplen_acum
+        )
 
 # --- BOTÓN ---
 if st.button("Siguiente"):
 
-    if len(valores_validos) == 0 or errores:
-        st.warning("Completa todos los tiempos antes de continuar")
+    if errores:
+        st.warning("⚠️ Completa todos los tiempos antes de continuar")
     else:
         st.session_state.acumulados["trayectos_totales"] += frecuencia
 
