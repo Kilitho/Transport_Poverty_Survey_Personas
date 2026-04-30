@@ -16,7 +16,6 @@ if "acumulados" not in st.session_state:
     }
 
 acum = st.session_state.acumulados
-
 data_prev = st.session_state.data
 
 # --- PREFERENCIAS ---
@@ -43,27 +42,20 @@ iconos = {
     "Transporte público": "🚌"
 }
 
-errores = False
-
 for t in ["Coche/Moto", "Bicicleta", "Caminar", "Transporte público"]:
     if t in transportes:
-        val = st.number_input(
+        resultados[t] = st.number_input(
             f"{iconos[t]} {t} (min)",
             min_value=1,
             value=None,
             placeholder="Introduce tiempo..."
         )
-        resultados[t] = val
 
-        if val is None:
-            errores = True
-
-if errores:
-    st.error("⚠️ Debes completar todos los tiempos")
+# --- VALIDACIÓN (SOLO AL ENVIAR) ---
+valores_validos = [v for v in resultados.values() if v is not None]
+errores = len(valores_validos) == 0 or any(v is None for v in resultados.values())
 
 # --- CÁLCULOS ---
-valores_validos = [v for v in resultados.values() if v is not None]
-
 if len(valores_validos) > 0:
 
     tiempo_min = min(valores_validos)
@@ -75,40 +67,42 @@ if len(valores_validos) > 0:
     cumplen_acum = acum["trayectos_cumplen"] + (frecuencia if hay_eficiente else 0)
     horas_acum = acum["horas_totales"] + horas_pagina
 
-    # --- MÉTRICAS ---
-    st.subheader("Resumen salud")
+    # --- RESUMEN ---
+    st.subheader("Resumen mensual")
 
-    col1, col2, col3 = st.columns(3)
+    colA, colB, colC = st.columns(3)
 
-    with col1:
+    with colA:
         st.metric("Tiempo total", f"{horas_pagina:.1f} h")
 
-    with col2:
-        st.metric("Medios eficientes", f"{sum(v <= tiempo_razonable for v in valores_validos)}/{len(valores_validos)}")
+    with colB:
+        st.metric(
+            "Medios eficientes",
+            f"{sum(v <= tiempo_razonable for v in valores_validos)}/{len(valores_validos)}"
+        )
 
-    with col3:
+    with colC:
         st.metric("Trayectos largos", total_acum - cumplen_acum)
 
+    # --- ACUMULADO GLOBAL ---
     st.markdown("### 📊 Acumulado global")
 
     st.write(f"**Horas totales acumuladas: {horas_acum:.1f} h**")
-    st.write(f"**{cumplen_acum} / {total_acum} trayectos cumplen el tiempo razonable**")
 
-# --- GUARDADO ---
-st.session_state.data["salud"] = {
-    "frecuencia": frecuencia,
-    "tiempos": resultados,
-    "tiempo_razonable": tiempo_razonable
-}
+    st.metric(
+        "Trayectos dentro del tiempo razonable",
+        f"{cumplen_acum} / {total_acum}"
+    )
 
 # --- BOTÓN ---
 if st.button("Ver resultados"):
+
     if errores:
-        st.warning("Completa todos los campos antes de continuar")
+        st.warning("⚠️ Completa todos los tiempos antes de continuar")
     else:
         st.session_state.acumulados["trayectos_totales"] += frecuencia
 
-        if any(v <= tiempo_razonable for v in valores_validos):
+        if hay_eficiente:
             st.session_state.acumulados["trayectos_cumplen"] += frecuencia
 
         st.session_state.acumulados["horas_totales"] += horas_pagina
