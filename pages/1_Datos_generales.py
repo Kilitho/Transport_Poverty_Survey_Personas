@@ -55,6 +55,7 @@ country = st.selectbox(
 )
 
 if country == "Other":
+    country = st.text_input("Please specify your country")
 
 
 # --- TRANSPORT FIRST ---
