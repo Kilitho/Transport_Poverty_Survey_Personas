@@ -118,7 +118,22 @@ st.info("""
 
 👉 Example:  
 I go to work **4 times per week** (I work from home one day).  
-So: **4 × 4 weeks = 16 times per month**
+So I would input 16 as I go : **4 × 4 weeks = 16 times per month**
+
+What is your situation?
+""")
+
+
+st.info("""
+### 2️⃣ Reasonable travel time
+
+**What travel time do you consider reasonable?**
+
+👉 Example:  
+In my opinion, I think it should not take more than **40 minutes** to go to work.  
+Another person might think **30 minutes is already too much**.
+
+What do you think?
 """)
 
 # --- PREFERENCIAS ---
@@ -131,15 +146,6 @@ with col1:
         0, 40, 20
     )
 
-st.info("""
-### 2️⃣ Reasonable travel time
-
-**What travel time do you consider reasonable?**
-
-👉 Example:  
-In my opinion, it should not take more than **40 minutes**.  
-Another person might think **30 minutes is already too much**.
-""")
 
 with col2:
     st.subheader("⏳ Reasonable time")
@@ -153,10 +159,12 @@ st.info("""
 
 Now, enter how long it takes using each transport mode.
 
-👉 Example:  
-- I never walk → leave it empty  
-- Public transport → **60 min**  
-- Car → **40 min**
+👉 Example for my case:  
+- I never walk → I would leave it empty  
+- Public transport → It takes me **60 min**  
+- Car → It takes me **40 min**
+
+What is your situation?
 """)
 
 # =========================================================
@@ -209,30 +217,19 @@ if len(values) > 0:
     # -----------------------------
     # 🧠 EXPLICACIÓN RESULTADOS
     # -----------------------------
-    st.markdown("## 📊 What do these results mean?")
-
-    st.success("""
-### 🟢 Monthly summary
-
-This shows:
-- How much time you spend travelling to work  
-- Which transport modes allow you to do it within a reasonable time
-""")
-
-    st.success("""
-### 🌍 Global accumulation
-
-This includes **all essential trips** (work, health, shopping).
-
-As you complete more sections:
-- You will see the **total time spent travelling**
-- And how many trips are **within a reasonable time vs too long**
-""")
 
     # -----------------------------
     # 📊 RESUMEN
     # -----------------------------
     st.subheader("Monthly summary")
+    
+    st.success("""
+    ### 🟢 Monthly summary
+
+    This section provides insights for this precise trip. In this case, we are analysing **Work trips** so it tels:
+    - How much time you spend travelling to work  
+    - Which transport modes allow you to do it within a reasonable time
+    """)
 
     colA, colB = st.columns(2)
 
@@ -249,6 +246,17 @@ As you complete more sections:
     # 🌍 GLOBAL
     # -----------------------------
     st.markdown("### 📊 Global accumulation")
+
+    st.success("""
+### 🌍 Global accumulation
+
+This includes **all essential trips** (work, health, shopping, etc).
+
+As you complete more sections:
+- You will see the **total time spent travelling**
+- And how many trips are **within a reasonable time vs too long**
+""")
+
 
     col1, col2, col3 = st.columns(3)
 
