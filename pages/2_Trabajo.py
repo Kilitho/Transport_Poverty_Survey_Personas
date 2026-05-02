@@ -55,29 +55,29 @@ if len(values) > 0:
     hours_acum = acum["total_hours"] + hours_page
 
     # --- SUMMARY ---
-    st.subheader("Monthly summary")
+    st.subheader("Monthly summary for work")
 
     colA, colB = st.columns(2)
 
     with colA:
-        st.metric("Total time spent", f"{hours_page:.1f} h")
+        st.metric("Total time spent going to work", f"{hours_page:.1f} h")
 
     with colB:
-        st.metric("Efficient transport modes", f"{sum(v <= reasonable_time for v in values)}/{len(values)}")
+        st.metric("Number of transport that allow you to reach work in reasonable time", f"{sum(v <= reasonable_time for v in values)}/{len(values)}")
 
     # --- GLOBAL ---
-    st.markdown("### 📊 Global accumulation")
+    st.markdown("### 📊 Global onthly accumulation")
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.metric("Total hours", f"{hours_acum:.1f} h")
+        st.metric("Total hours spent in transport", f"{hours_acum:.1f} h")
 
     with col2:
-        st.metric("Trips within reasonable time", f"{efficient_acum} / {total_acum}")
+        st.metric("Essential trips within reasonable time / Essential trips", f"{efficient_acum} / {total_acum}")
 
     with col3:
-        st.metric("Long trips", total_acum - efficient_acum)
+        st.metric("Essential trips that take too long", total_acum - efficient_acum)
 
 # --- BUTTON ---
 if st.button("Next"):

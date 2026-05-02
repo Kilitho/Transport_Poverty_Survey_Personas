@@ -47,16 +47,17 @@ if len(values) > 0:
     st.subheader("Monthly summary")
 
     colA, colB = st.columns(2)
-    colA.metric("Total time", f"{hours_page:.1f} h")
-    colB.metric("Efficient modes", f"{sum(v <= reasonable_time for v in values)}/{len(values)}")
+    colA.metric("Total time spent going to supermarket", f"{hours_page:.1f} h")
+    colB.metric("Number of transport that allow you to reach a supermarket in reasonable time", f"{sum(v <= reasonable_time for v in values)}/{len(values)}")
 
     st.markdown("### 📊 Global accumulation")
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Total hours", f"{hours_acum:.1f} h")
-    col2.metric("Trips within time", f"{efficient_acum} / {total_acum}")
-    col3.metric("Long trips", total_acum - efficient_acum)
-
+    col1.metric("Total hours spent in transport", f"{hours_acum:.1f} h")
+    col2.metric("Essential trips within reasonable time / Essential trips", f"{efficient_acum} / {total_acum}")
+    col3.metric("Essential trips that take too long", total_acum - efficient_acum)
+    
+    
 if st.button("Finish"):
     if errors:
         st.warning("⚠️ Complete all fields")
