@@ -41,7 +41,21 @@ zone = st.radio(
     ["A: Urban", "B: Peri-urban", "C: Rural"]
 )
 
-country = st.text_input("Which country do you live in?")
+eu_countries = [
+    "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic",
+    "Denmark", "Estonia", "Finland", "France", "Germany", "Greece",
+    "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg",
+    "Malta", "Netherlands", "Poland", "Portugal", "Romania",
+    "Slovakia", "Slovenia", "Spain", "Sweden"
+]
+
+country = st.selectbox(
+    "Which country do you live in?",
+    sorted(eu_countries) + ["Other"]
+)
+
+if country == "Other":
+
 
 # --- TRANSPORT FIRST ---
 transport_modes = st.multiselect(

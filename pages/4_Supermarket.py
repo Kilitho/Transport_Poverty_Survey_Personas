@@ -44,13 +44,13 @@ if len(values) > 0:
     efficient_acum = acum["efficient_trips"] + (frequency if efficient else 0)
     hours_acum = acum["total_hours"] + hours_page
 
-    st.subheader("Monthly summary")
+    st.subheader("Monthly summary for supermarket")
 
     colA, colB = st.columns(2)
     colA.metric("Total time spent going to supermarket", f"{hours_page:.1f} h")
     colB.metric("Number of transport that allow you to reach a supermarket in reasonable time", f"{sum(v <= reasonable_time for v in values)}/{len(values)}")
 
-    st.markdown("### 📊 Global accumulation")
+    st.markdown("### 📊 Global monthly accumulation")
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Total hours spent in transport", f"{hours_acum:.1f} h")
