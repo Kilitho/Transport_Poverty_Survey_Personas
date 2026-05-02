@@ -91,6 +91,6 @@ if st.button("Next"):
 
         st.session_state.acumulados["total_hours"] += hours_page
 
-        st.switch_page("pages/3_Health.py")
+        st.switch_page("pages/3_Salud.py")
 
 st.progress(0.5)

@@ -34,11 +34,11 @@ st.subheader("Where do you live?")
 
 image_path = Path("Images/Urban_rural.png")
 
-st.image(image_path)
+st.image(image_path, width=450)
 
 zone = st.radio(
     "Select your area type",
-    ["Urban", "Peri-urban", "Rural"]
+    ["A: Urban", "B: Peri-urban", "C: Rural"]
 )
 
 country = st.text_input("Which country do you live in?")
