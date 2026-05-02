@@ -30,10 +30,6 @@ if "data" not in st.session_state:
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown('<div class="big-label">🎂 Age</div>', unsafe_allow_html=True)
-    age = st.slider("", 0, 100, 30)
-
-with col2:
     st.markdown('<div class="big-label">👤 Personal situation</div>', unsafe_allow_html=True)
     situation = st.selectbox(
         "",
@@ -46,6 +42,12 @@ with col2:
         ],
         index=None
     )
+
+
+with col2:
+    st.markdown('<div class="big-label">🎂 Age</div>', unsafe_allow_html=True)
+    age = st.slider("", 0, 100, 30)
+
 
 # =========================================================
 # LOCATION INSIDE CITY

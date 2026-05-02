@@ -51,6 +51,12 @@ if len(values) > 0:
     colB.metric("Number of transport that allow you to reach hospital in reasonable time", f"{sum(v <= reasonable_time for v in values)}/{len(values)}")
 
     st.markdown("### 📊 Global monthly accumulation")
+    
+    st.success("""
+### 🌍 Global accumulation
+
+You can now see that this considers the work trips + the hospital trips. 
+""")
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Total hours spent in transport", f"{hours_acum:.1f} h")

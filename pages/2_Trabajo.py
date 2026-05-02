@@ -109,7 +109,7 @@ acum = st.session_state.acumulados
 # 🧠 INTRODUCCIÓN GUIADA
 # =========================================================
 
-st.markdown("## 👋 Let's go step by step")
+st.markdown("## 👋 Hi! In each page, you will have to answer the same questions, so let me guide you through the first")
 
 st.info("""
 ### 1️⃣ Frequency of the trip
