@@ -133,7 +133,7 @@ st.info("""
 In my opinion, I think it should not take more than **40 minutes** to go to work.  
 Another person might think **30 minutes is already too much**.
 
-What do you think?
+What do you think? What is it too long for you?
 """)
 
 # --- PREFERENCIAS ---
@@ -161,8 +161,8 @@ Now, enter how long it takes using each transport mode.
 
 👉 Example for my case:  
 - I never walk → I would leave it empty  
-- Public transport → It takes me **60 min**  
-- Car → It takes me **40 min**
+- Public transport → It takes me **55 min**  to go (10 min walk + 40 min train + 5 min walk)
+- Car → It takes me **40 min** (30 min trip + 10 minutes walking to office)
 
 What is your situation?
 """)
@@ -189,7 +189,7 @@ for t in ["Car/Motorbike", "Bicycle", "Walking", "Public transport"]:
             f"{icons[t]} {t} (minutes)",
             min_value=1,
             value=None,
-            placeholder="Enter time..."
+            placeholder="Enter time. If left empty, it means not possible"
         )
 
 # =========================================================
@@ -197,7 +197,7 @@ for t in ["Car/Motorbike", "Bicycle", "Walking", "Public transport"]:
 # =========================================================
 
 values = [v for v in results.values() if v is not None]
-errors = len(values) == 0 or any(v is None for v in results.values())
+errors = len(values) == 0
 
 # =========================================================
 # CÁLCULOS + EXPLICACIÓN
@@ -226,9 +226,13 @@ if len(values) > 0:
     st.success("""
     ### 🟢 Monthly summary
 
-    This section provides insights for this precise trip. In this case, we are analysing **Work trips** so it tels:
+    This section provides insights for this precise trip.    
+    In this case, we are analysing **Work trips** so it tells:
     - How much time you spend travelling to work  
     - Which transport modes allow you to do it within a reasonable time
+    
+    
+    Take into account these are only "go trips", no return. The results would be equivalent, but multiplied by 2. 
     """)
 
     colA, colB = st.columns(2)
@@ -290,7 +294,7 @@ if st.button("Next"):
 
         st.session_state.acumulados["total_hours"] += hours_page
 
-        st.switch_page("pages/3_Health.py")
+        st.switch_page("pages/3_Salud.py")
 
 # =========================================================
 # PROGRESO
