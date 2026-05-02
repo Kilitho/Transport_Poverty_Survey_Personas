@@ -1,120 +1,71 @@
 import streamlit as st
 
-st.set_page_config(page_title="Encuesta", layout="wide")
+st.set_page_config(page_title="Survey", layout="wide")
 
-st.title("Salud")
+st.title("Hospital trips")
 
-# --- SESSION STATE ---
-if "data" not in st.session_state:
-    st.session_state.data = {}
-
-if "acumulados" not in st.session_state:
-    st.session_state.acumulados = {
-        "trayectos_totales": 0,
-        "trayectos_cumplen": 0,
-        "horas_totales": 0
-    }
-
-acum = st.session_state.acumulados
 data_prev = st.session_state.data
+acum = st.session_state.acumulados
 
-# --- PREFERENCIAS ---
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("🔢 Frecuencia")
-    frecuencia = st.slider("Visitas al mes", 0, 20, 1)
+    frequency = st.slider("How many times per month do you go to the hospital?", 0, 20, 1)
 
 with col2:
-    st.subheader("⏳ Tiempo razonable")
-    tiempo_razonable = st.slider("Minutos", 5, 120, 30, step=5)
+    reasonable_time = st.slider("Reasonable travel time (min)", 5, 120, 30, step=5)
 
-# --- TRANSPORTES ---
-st.subheader("Tiempo por transporte")
+st.subheader("Travel time by transport")
 
-transportes = data_prev.get("transportes", [])
-resultados = {}
+transport_modes = data_prev.get("transport_modes", [])
+results = {}
 
-iconos = {
-    "Coche/Moto": "🚗",
-    "Bicicleta": "🚲",
-    "Caminar": "🚶",
-    "Transporte público": "🚌"
+icons = {
+    "Car/Motorbike": "🚗",
+    "Bicycle": "🚲",
+    "Walking": "🚶",
+    "Public transport": "🚌"
 }
 
-for t in ["Coche/Moto", "Bicicleta", "Caminar", "Transporte público"]:
-    if t in transportes:
-        resultados[t] = st.number_input(
-            f"{iconos[t]} {t} (min)",
-            min_value=1,
-            value=None,
-            placeholder="Introduce tiempo..."
-        )
+for t in ["Car/Motorbike", "Bicycle", "Walking", "Public transport"]:
+    if t in transport_modes:
+        results[t] = st.number_input(f"{icons[t]} {t} (min)", min_value=1, value=None)
 
-# --- VALIDACIÓN ---
-valores_validos = [v for v in resultados.values() if v is not None]
-errores = len(valores_validos) == 0 or any(v is None for v in resultados.values())
+values = [v for v in results.values() if v is not None]
+errors = len(values) == 0 or any(v is None for v in results.values())
 
-# --- CÁLCULOS ---
-if len(valores_validos) > 0:
+if len(values) > 0:
 
-    tiempo_min = min(valores_validos)
-    horas_pagina = (tiempo_min * frecuencia) / 60
+    min_time = min(values)
+    hours_page = (min_time * frequency) / 60
+    efficient = any(v <= reasonable_time for v in values)
 
-    hay_eficiente = any(v <= tiempo_razonable for v in valores_validos)
+    total_acum = acum["total_trips"] + frequency
+    efficient_acum = acum["efficient_trips"] + (frequency if efficient else 0)
+    hours_acum = acum["total_hours"] + hours_page
 
-    total_acum = acum["trayectos_totales"] + frecuencia
-    cumplen_acum = acum["trayectos_cumplen"] + (frecuencia if hay_eficiente else 0)
-    horas_acum = acum["horas_totales"] + horas_pagina
-
-    # --- RESUMEN ---
-    st.subheader("Resumen salud")
+    st.subheader("Monthly summary")
 
     colA, colB = st.columns(2)
+    colA.metric("Total time", f"{hours_page:.1f} h")
+    colB.metric("Efficient modes", f"{sum(v <= reasonable_time for v in values)}/{len(values)}")
 
-    with colA:
-        st.metric("Tiempo total", f"{horas_pagina:.1f} h")
-
-    with colB:
-        st.metric(
-            "Medios eficientes",
-            f"{sum(v <= tiempo_razonable for v in valores_validos)}/{len(valores_validos)}"
-        )
-
-    # --- ACUMULADO GLOBAL ---
-    st.markdown("### 📊 Acumulado global")
+    st.markdown("### 📊 Global accumulation")
 
     col1, col2, col3 = st.columns(3)
+    col1.metric("Total hours", f"{hours_acum:.1f} h")
+    col2.metric("Trips within time", f"{efficient_acum} / {total_acum}")
+    col3.metric("Long trips", total_acum - efficient_acum)
 
-    with col1:
-        st.metric("Horas totales acumuladas", f"{horas_acum:.1f} h")
-
-    with col2:
-        st.metric(
-            "Trayectos dentro del tiempo razonable",
-            f"{cumplen_acum} / {total_acum}"
-        )
-
-    with col3:
-        st.metric(
-            "Trayectos largos",
-            total_acum - cumplen_acum
-        )
-
-# --- BOTÓN ---
-if st.button("Ver resultados"):
-
-    if errores:
-        st.warning("⚠️ Completa todos los tiempos antes de continuar")
+if st.button("Next"):
+    if errors:
+        st.warning("⚠️ Complete all fields")
     else:
-        st.session_state.acumulados["trayectos_totales"] += frecuencia
+        st.session_state.acumulados["total_trips"] += frequency
+        if efficient:
+            st.session_state.acumulados["efficient_trips"] += frequency
+        st.session_state.acumulados["total_hours"] += hours_page
 
-        if hay_eficiente:
-            st.session_state.acumulados["trayectos_cumplen"] += frecuencia
+        st.switch_page("pages/4_Supermarket.py")
 
-        st.session_state.acumulados["horas_totales"] += horas_pagina
-
-        st.switch_page("pages/4_Resultados.py")
-
-# --- PROGRESO ---
 st.progress(0.75)

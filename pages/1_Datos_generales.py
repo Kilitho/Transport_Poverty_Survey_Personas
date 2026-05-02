@@ -1,75 +1,77 @@
-"""import streamlit as st
-
-st.title("Datos generales")
-
-st.session_state.data["edad"] = st.number_input("Edad", 0, 100)
-
-st.session_state.data["situacion"] = st.selectbox(
-    "Situación actual",
-    ["Estudia", "Trabaja", "Jubilado", "Desempleado"]
-)
-
-st.session_state.data["ninos"] = st.number_input("Menores a cargo", 0)
-st.session_state.data["adultos"] = st.number_input("Adultos a cargo", 0)
-
-st.session_state.data["transportes"] = st.multiselect(
-    "Transportes",
-    ["Caminar", "Bicicleta", "Transporte público", "Coche/Moto"]
-)
-
-
-    
-if st.button("Siguiente"):
-    st.switch_page("pages/2_Trabajo.py")
-    
-"""
-
+from pathlib import Path
 import streamlit as st
 
-st.set_page_config(page_title="Encuesta", layout="wide")
+st.set_page_config(page_title="Survey", layout="wide")
 
-st.title("Datos generales")
+# --- BIGGER TEXT ---
+st.markdown("""
+<style>
+label, .stMarkdown {
+    font-size: 18px !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# Barra de progreso (ejemplo: 25%)
+st.title("General Information")
+
 st.progress(0.25)
 
-# --- FILA SUPERIOR ---
+# --- TOP ROW ---
 col1, col2 = st.columns(2)
 
 with col1:
-    edad = st.number_input("Edad", 0, 100)
+    age = st.slider("Age", 0, 100, 30)
 
 with col2:
-    situacion = st.selectbox(
-        "Situación actual",
-        ["Estudia", "Trabaja", "Jubilado", "Desempleado"]
+    situation = st.selectbox(
+        "Current situation",
+        ["Student", "Employed", "Retired", "Unemployed"]
     )
 
-# --- FILA INFERIOR ---
-ninos = st.number_input("Menores a cargo", 0)
-adultos = st.number_input("Adultos a cargo", 0)
+# --- LOCATION ---
+st.subheader("Where do you live?")
 
-transportes = st.multiselect(
-    "Transportes que usas habitualmente",
-    ["Caminar", "Bicicleta", "Transporte público", "Coche/Moto"]
+
+image_path = Path("Images/Urban_rural.png")
+
+st.image(image_path)
+
+zone = st.radio(
+    "Select your area type",
+    ["Urban", "Peri-urban", "Rural"]
 )
 
-# Guardar en session_state
-st.session_state.data["edad"] = edad
-st.session_state.data["situacion"] = situacion
-st.session_state.data["ninos"] = ninos
-st.session_state.data["adultos"] = adultos
-st.session_state.data["transportes"] = transportes
+country = st.text_input("Which country do you live in?")
 
+# --- TRANSPORT FIRST ---
+transport_modes = st.multiselect(
+    "Which transport modes do you usually use?",
+    ["Walking", "Bicycle", "Public transport", "Car/Motorbike"]
+)
 
-mostrar_error = False
+# --- DEPENDENTS ---
+children = st.number_input("Children in care", 0)
+adults = st.number_input("Adults in care", 0)
 
-if st.button("Siguiente"):
-    if len(transportes) == 0:
-        mostrar_error = True
+# --- SAVE ---
+st.session_state.data.update({
+    "age": age,
+    "situation": situation,
+    "children": children,
+    "adults": adults,
+    "transport_modes": transport_modes,
+    "zone": zone,
+    "country": country
+})
+
+# --- VALIDATION ---
+error = False
+
+if st.button("Next"):
+    if len(transport_modes) == 0:
+        error = True
     else:
         st.switch_page("pages/2_Trabajo.py")
 
-if mostrar_error:
-    st.error("⚠️ Selecciona al menos un medio de transporte")
-    
+if error:
+    st.error("⚠️ Please select at least one transport mode")
